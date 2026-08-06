@@ -1,7 +1,7 @@
 services:
   postgres:
     image: pgvector/pgvector:pg16
-    container_name: talkbook-postgres
+    container_name: talkbook-postgresql
     environment:
       POSTGRES_DB: talkbook
       POSTGRES_USER: postgres
