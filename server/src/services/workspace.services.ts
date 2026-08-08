@@ -10,6 +10,7 @@ import {
   findWorkspaceByUserId,
   updateWorkspaceRecord,
 } from "../repository/workspace.repository";
+
 import { NotFoundError } from "../types/app-error";
 
 export function listWorkspaceByUser(userId: string) {
