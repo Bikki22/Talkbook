@@ -5,6 +5,9 @@ import { auth } from "./lib/auth";
 import cors from "cors";
 import { registerRoutes } from "./routes";
 import { errorHandler } from "./middleware/error-handler.middleware";
+import { inngest } from "./inngest/client";
+import { serve } from "inngest/express";
+import { functions } from "./inngest/index";
 
 const app = express();
 
@@ -21,6 +24,8 @@ app.use(
 app.all("/api/auth/{*any}", toNodeHandler(auth));
 
 app.use(express.json());
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.get("/", (req, res) => {
   res.send("Hello World");

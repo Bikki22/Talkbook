@@ -1,6 +1,7 @@
 import { uploadPdfToCloudinary } from "../lib/cloudinary";
 import { scrapeWebsite } from "../lib/firecrawl";
 import { extractPdfFromBuffer } from "../lib/pdf";
+import { enqueSourceProcessing } from "../lib/source-events";
 import { fetchYoutubeTranscript } from "../lib/youtube";
 import {
   createSourceRecord,
@@ -27,10 +28,10 @@ async function createAndProcessSource(
 ) {
   const source = await createSourceRecord(data);
 
-  //   await enqueSourceProcessing({
-  //     sourceId: source.id,
-  //     workspaceId: source.workspaceId,
-  //   });
+  await enqueSourceProcessing({
+    sourceId: source.id,
+    workspaceId: source.workspaceId,
+  });
 
   return source;
 }
@@ -51,13 +52,13 @@ export const createTextOrMarkdownSource = async (
 ) => {
   await assertWorkspaceAccess(workspaceId, userId);
 
-  //   return createAndProcessSource({
-  //     workspaceId,
-  //     type: input.type,
-  //     title: input.title,
-  //     content: input.content,
-  //     status: "PENDING",
-  //   });
+  return createAndProcessSource({
+    workspaceId,
+    type: input.type,
+    title: input.title,
+    content: input.content,
+    status: "PENDING",
+  });
 };
 
 export async function getSourceForWorkspace(

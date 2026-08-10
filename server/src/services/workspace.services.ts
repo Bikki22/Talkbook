@@ -12,6 +12,7 @@ import {
 } from "../repository/workspace.repository";
 
 import { NotFoundError } from "../types/app-error";
+import { deleteWorkspaceVectors } from "../lib/pinecone";
 
 export function listWorkspaceByUser(userId: string) {
   return findWorkspaceByUserId(userId);
@@ -52,11 +53,11 @@ export async function deleteWorkspaceForUser(
 ) {
   await getWorkspaceByIdForUser(workspaceId, userId);
 
-  //   try {
-  //     return deleteWorkspaceVectors(workspaceId);
-  //   } catch (error) {
-  //     console.error("Failed to delete Pinecone namespace", error);
-  //   }
+  try {
+    return deleteWorkspaceVectors(workspaceId);
+  } catch (error) {
+    console.error("Failed to delete Pinecone namespace", error);
+  }
 
   await deleteWorkspaceRecord(workspaceId);
 }
