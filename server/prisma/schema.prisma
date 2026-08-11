@@ -92,8 +92,10 @@ model Workspace {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  source Source[]
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source        Source[]
+  conversations Conversation[]
+  artifacts     LearningArtifacts[]
 
   @@index([userId])
   @@map("workspace")
@@ -148,4 +150,78 @@ model SourceChunk {
   @@index([sourceId, index])
   @@index([sourceId])
   @@map("source_chunk")
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+model Conversation {
+  id                  String    @id @default(cuid())
+  workspaceId         String
+  title               String?
+  summary             String?
+  summaryMessageCount Int       @default(0)
+  summarizedAt        DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  messages            Message[]
+  workspace           Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@index([workspaceId])
+  @@index([workspaceId, updatedAt])
+  @@map("conversation")
+}
+
+model Message {
+  id String @id @default(cuid())
+
+  conversationId String
+  role           MessageRole
+  content        String
+  citations      Json?
+  createdAt      DateTime    @default(now())
+
+  conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([conversationId, createdAt])
+  @@map("message")
+}
+
+enum ArtifactType {
+  SUMMARY
+  TAKEAWAYS
+  FLASHCARD
+  QUIZ
+  MINDMAP
+  REPORT
+}
+
+enum ArtifactStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+model LearningArtifacts {
+  id          String         @id @default(cuid())
+  workspaceId String
+  type        ArtifactType
+  title       String
+  content     Json?
+  sourceIds   String[]
+  status      ArtifactStatus @default(PENDING)
+  metadata    Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([workspaceId, type])
+  @@index([workspaceId, status])
+  @@map("learning_artifact")
 }
