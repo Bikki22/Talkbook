@@ -1,5 +1,6 @@
 import { findChunksBySourceId } from "../repository/source-chunk.repository";
 import { findSourceById } from "../repository/source.ropository";
+import { processArtifactById } from "../services/artifact.services";
 import { summarizeConversationById } from "../services/conversation-memory.services";
 import {
   chunkSourceContent,
@@ -52,6 +53,21 @@ export const processSource = inngest.createFunction(
       });
       throw error;
     }
+  },
+);
+
+export const generateArtifact = inngest.createFunction(
+  {
+    id: "generate-artifact",
+    retries: 2,
+    triggers: [{ event: "artifact/generate" }],
+  },
+  async ({ event, step }) => {
+    const { artifactId } = event.data;
+
+    await step.run("generate", () => processArtifactById(artifactId));
+
+    return { artifactId, status: "READY" };
   },
 );
 
