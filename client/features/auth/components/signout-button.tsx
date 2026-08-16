@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { signOut } from "../lib/auth-client";
 import { authRoutes } from "../lib/auth-routes";
+import { useState } from "react";
 
 export function SignOutButton() {
   const router = useRouter();
