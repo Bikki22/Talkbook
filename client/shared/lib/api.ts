@@ -24,7 +24,7 @@ export async function apiFetch<T>(
   }
 
   const response = await fetch(path, {
-    ...options, 
+    ...options,
     credentials: "include",
     headers,
   });
