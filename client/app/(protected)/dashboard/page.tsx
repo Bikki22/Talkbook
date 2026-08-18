@@ -1,8 +1,8 @@
 import { requireAuth } from "@/features/auth";
-import React from "react";
+import { DashboardHome } from "@/features/workspace/components/dashboard-home";
 
 export default async function DashboardPage() {
   const session = await requireAuth();
 
-  return <DashboardHome username={session.user.name} />;
+  return <DashboardHome userName={session.user.name} />;
 }
